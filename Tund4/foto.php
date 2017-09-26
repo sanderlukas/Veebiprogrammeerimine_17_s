@@ -1,21 +1,12 @@
 <?php
 	$picsDir = "../pildid/";
-	$picFileTypes = ["jpg", "jpeg", "png", "gif"];
-	$picFiles = [];
-	
-	$allFiles = array_slice(scandir($picsDir), 2);
+	$picList = [];
+	$allFiles = scandir($picsDir);
 	//var_dump($allFiles);
-	
-	foreach ($allFiles as $file) {
-		$fileType = pathinfo($file, PATHINFO_EXTENSION);
-		if (in_array($fileType, $picFileTypes) == True) {
-			array_push($picFiles, $file);
-		}
-	}
-	
-	$picCount = count($allFiles);
+	$picList = array_slice($allFiles, 2);
+	$picCount = count($picList);
 	$picNum = mt_rand(0, ($picCount - 1));
-	$picFile = $allFiles[$picNum];
+	$picFile = $picList[$picNum];
 	
 ?>
 
