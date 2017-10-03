@@ -165,30 +165,9 @@
 		
 		$signupPassword = hash("sha512", $_POST["signupPassword"]);
 		//Ühendus serveriga
-		$database = "if17_lukasand";
-		$mysqli = new mysqli($serverHost, $serverUsername, $serverPassword, $database);
-		//käsk serverile
-		$stmt = $mysqli -> prepare("INSERT INTO vpusers (First_name, Last_name, Birthday, Gender, Email, Password) VALUES (?, ?, ?, ?, ?, ?)");
-		echo $mysqli -> error;
-		//seome andmed
-		$stmt->bind_param("sssiss", $signupFirstName, $signupFamilyName, $signupBirthDate, $gender, $signupEmail, $signupPassword);
-		// $stmt -> execute();
-		if ($stmt -> execute()) {
-			echo "õnnestus!";
-		} else {
-			echo "tekkis viga! " .$stmt->error;
+		signUp($signupFirstName, $signupFamilyName, $signupBirthDate, $gender, $signupEmail, $signupPassword);
 		}
 		
-	}
-	//Sisestuse testimise funktsioon
-	/*function test_input($data) {
-		$data = trim($data); //eemaldab lõpust tühikud, TAB jne.
-		$data = stripcslashes($data); //eemaldab "\"
-		$data = htmlspecialchars($data); //eemaldab keelatud märgid
-		return $data; //NÜÜD TUND5s
-	
-	}*/
-	
 ?>
 
 <!DOCTYPE html>
