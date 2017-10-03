@@ -2,6 +2,12 @@
 	require("../../../config.php");
 	require("functions.php");
 	
+	//kui on sisselogitud, siis otse pealehele
+	if (isset($_SESSION["userId"])) {
+		header("Location: main.php");
+		exit();
+	}
+	
 	$loginEmail = "";
 	$signupFirstName = "";
 	$signupFamilyName = "";
@@ -11,6 +17,7 @@
 	$signupBirthMonth = null;
 	$signupBirthYear = null;
 	$signupBirthDate = null;
+	$notice = "";
 	
 	$loginEmailError = "";
 	$signupFirstNameError = "";
@@ -20,19 +27,25 @@
 	$signupEmailError = "";
 	$signupPasswordError = "";
 	
+	if (isset($_POST["signinButton"])) {
 	//kas on kasutajanimi sisestatud
-	if (isset ($_POST["loginEmail"])){
-		if (empty ($_POST["loginEmail"])){
-			$loginEmailError ="NB! Ilma selleta ei saa sisse logida!";
-		} 
-		else {
-			$loginEmail = $_POST["loginEmail"];
+		if (isset ($_POST["loginEmail"])){
+			if (empty ($_POST["loginEmail"])){
+				$loginEmailError ="NB! Ilma selleta ei saa sisse logida!";
+			}
+			else {
+				$loginEmail = $_POST["loginEmail"];
+			}
 		}
-	}
-	
+
+		if (!empty($loginEmail) and !empty($_POST["loginPassword"])) {
+			//echo "Hakkan sisse logima";
+			$notice = signIn($loginEmail, $_POST["loginEmail"]);
+		}
+		} //Kas vajutati sign in
+
+
 	if (isset($_POST["signupButton"])) {
-		
-	
 	//kontrollime, kas kirjutati eesnimi
 	if (isset ($_POST["signupFirstName"])){
 		if (empty ($_POST["signupFirstName"])){
@@ -180,7 +193,7 @@
 	<h3> Sisselogimine </h3>	
 	<form method = "POST">
 		<fieldset>
-			<label> Kasutajanimi: </label><br>
+			<label> Kasutajanimi (E-post): </label><br>
 			<input type = "email" name = "loginEmail" value = "<?php echo $loginEmail; ?>">
 			<span> <?php echo $loginEmailError; ?> </span><br>
 			
@@ -188,6 +201,7 @@
 			<input type = "password" name = "loginPassword" placeholder = "Salasõna"><br>
 			
 			<input name = "signinButton" type = "submit" value = "Logi sisse">
+			<span> <?php echo $notice; ?> </span>
 		</fieldset>
 	</form>
 	

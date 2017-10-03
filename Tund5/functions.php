@@ -1,5 +1,48 @@
 <?php
 	$database = "if17_lukasand";
+	
+	//alustan sessiooni
+	session_start();
+	
+	
+	//Sisselogimine
+	function signIn($email, $password) {
+		$notice = "";
+		//andmebaasi ühendus
+		$mysqli = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
+		$stmt = $mysqli -> prepare("SELECT id, email, password FROM vpusers WHERE email = ?");
+		$stmt -> bind_param("s", $email);
+		$stmt -> bind_result($id, $emailFromDB, $passwordFromDB);
+		$stmt -> execute();
+		
+		//Kontrollin vastavust
+		if ($stmt -> fetch()) {
+			$hash = hash("sha512", $password);
+			if ($hash == $passwordFromDB) {
+				$notice = "Kõik õige. Logisite sisse!";
+				
+				//sessiooonimuutujad
+				$_SESSION["userId"] = $id;
+				$_SESSION["userEmail"] = $emailFromDB;
+				//liigume pealehele
+				header("Location: main.php");
+				exit();
+			}
+			else {
+				$notice = "Vale salasõna";
+		}
+		}
+		
+		else {
+			$notice = "Sellist kasutajat (" .$email . ") ei leitud!";
+		}
+		$stmt -> close();
+		$mysqli -> close();
+		return $notice;
+	}
+		
+			
+
 	//Kasutaja andmebaasi salvestamine
 	function signUp($signupFirstName, $signupFamilyName, $signupBirthDate, $gender, $signupEmail, $signupPassword) {
 		$mysqli = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
