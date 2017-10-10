@@ -190,6 +190,8 @@
 	<title> SL veeb </title>
 </head>
 <body style = "background-color:PaleGoldenRod;">
+	<h1> Heade mõtete veeb </h1>
+	<p> Värkseim hea mõte: <span><?php echo latestIdea(); ?></span></p>
 	<h3> Sisselogimine </h3>	
 	<form method = "POST">
 		<fieldset>

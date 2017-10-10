@@ -28,24 +28,8 @@
 	<h1> Kasutajad </h1>
 	<p><b> See leht on loodud õppetöö raames ning ei sisalda mingit tõsiseltvõetavat sisu. </b></p>
 	<p> SL - 21 - Rapla </p>
-	<p><a href = "?logout = 1"> Logi välja! </a></p>
+	<p><a href = "?logout=1"> Logi välja! </a></p>
 	<hr>
-	<table border = "1" style = "border-collapse: collapse">
-		<tr> 
-			<th> Eesnimi </th>
-			<th> Perekonnanimi </th>
-			<th> E-post </th>
-			<th> Sünnipäev </th>
-			<th> Sugu </th>
-		</tr>
-		
-		<tr>
-			<td> S </td>
-			<td> L </td>
-			<td> </td>
-			<td> </td>
-			<td> </td>
-		</tr>
-	</table>
+	<?php echo users_table(); ?>
 </body>
 </html>

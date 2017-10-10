@@ -42,11 +42,11 @@
 	<title>Sander Lukas veebiprogrammeerimine </title>
 </head>
 <body>
-	<h1> Sisseloginud kui <?php echo $_SESSION["userFirstName"] . " " .$_SESSION["userLastName"]; ?> </h1>
+	<h1> Sisseloginud kui <?php echo $_SESSION["userFirstName"] ." " .$_SESSION["userLastName"]; ?> </h1>
 	
-	<p><a href = "?logout = 1"> Logi välja! </a></p>
+	<p><a href = "?logout=1"> Logi välja! </a></p>
 	<p><a href = "usersinfo.php"> Info süsteemi kasutajate kohta. </a></p>
-	<p><a href = "usersideas.php"> Kasutajate head mõtted </a></p>
+	<p><a href = "usersideas.php"> *Kasutajate mõtted* </a></p>
 	<hr>
 	<img src = "<?php echo $picsDir .$picFile; ?>" alt = "TLÜ">
 	<p> Kõik on õppetöö käigus loodud materjal! </p>

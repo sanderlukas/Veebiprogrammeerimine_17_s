@@ -57,12 +57,71 @@
 		// $stmt -> execute();
 		if ($stmt -> execute()) {
 			echo " > õnnestus!";
-		} else {
+		} 
+		else {
 			echo "tekkis viga! " .$stmt->error;
-	}
+		}
 	}
 	
+	function saveIdea($idea, $color) {
+		$notice = "";
+		$mysqli = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
+		
+		$stmt = $mysqli -> prepare("INSERT INTO vpusers_ideas (userid, idea, color) VALUES (?, ?, ?)");
+		
+		echo $mysqli -> error;
+		
+		$stmt -> bind_param("iss", $_SESSION["userId"], $idea, $color);
 	
+		if ($stmt -> execute()) {
+			$notice = "Mõte on salvestatud!";
+		
+		}
+		else {
+			$notice = "Mõtte salvestamisel tekkis viga: " .$stmt -> error;
+		}
+		
+		$stmt -> close();
+		$mysqli -> close();
+		return $notice;
+	}
+	
+	function listAllIdeas() {
+		$ideasHTML = "";
+
+		$mysqli = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
+		
+		//$stmt = $mysqli -> prepare ("SELECT idea, color FROM vpusers_ideas");
+		//$stmt = $mysqli -> prepare ("SELECT idea, color FROM vpusers_ideas WHERE userid = ? ");
+		$stmt = $mysqli -> prepare ("SELECT idea, color FROM vpusers_ideas WHERE userid = ? ORDER BY id DESC");
+		$stmt -> bind_param("i", $_SESSION["userId"]);
+		$stmt -> bind_result($idea, $color);
+		$stmt -> execute();
+		
+		while ($stmt -> fetch()) {
+			$ideasHTML .= '<p style = "background-color: ' .$color .'">' .$idea ."</p>\n";
+		}
+			
+		$stmt -> close();
+		$mysqli -> close();
+		return $ideasHTML;
+		
+	}
+	
+	function latestIdea() {
+		$mysqli = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
+		
+		$stmt = $mysqli -> prepare("SELECT idea FROM vpusers_ideas WHERE id = (SELECT MAX(id) FROM vpusers_ideas)");
+		
+		$stmt -> bind_result($idea);
+		$stmt -> execute();
+		$stmt -> fetch();
+		
+		$stmt -> close();
+		$mysqli -> close();
+		return $idea;
+		
+	}
 	
 	//Sisestuse testimise funktsioon
 	function test_input($data) {
@@ -73,11 +132,13 @@
 	}
 	
 	function users_table() {
-		$_SESSION["table"] = '<table border = "1" style = "border-collapse: collapse"> <tr><th>Eesnimi</th><th>Perekonnanimi</th><th>E-post</th><th>Sünnipäev</th><th>Sugu</th></tr>';
+		$_SESSION["table"] = '<table border = "1" style = "border-collapse: collapse"> <tr><th>Eesnimi</th> <th>Perekonnanimi</th> <th>E-post</th> <th>Sünnipäev</th> <th>Sugu</th> </tr>';
 		
 		//andmebaasi ühendus
 		$mysqli = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
+		
 		$stmt = $mysqli -> prepare("SELECT id, First_name, Last_name, Birthday, Email, Gender FROM vpusers");
+		
 		$stmt -> bind_result($id, $FirstNameFromDB, $LastNameFromDB, $BirthdayFromDB, $emailFromDB, $genderDB);
 		$stmt -> execute();
 		
@@ -88,15 +149,17 @@
 			else {
 				$genderDB = "Naine";
 			}
-			$_SESSION["table"] .= "<tr><th>" .$FirstNameFromDB ."</th></tr>" .$LastNameFromDB ."</th><th>" .$emailFromDB ."</th><th>" .$BirthdayFromDB ."</th><th>" .$genderDB ."</th><tr>";
+			$_SESSION["table"] .= "<tr><td>" .$FirstNameFromDB ."</td><td>" .$LastNameFromDB ."</td><td>" .$emailFromDB ."</td><td>" .$BirthdayFromDB ."</td><td>" .$genderDB ."</td></tr>";
 			
-			$_SESSION["table"] .= "</table>";
 		}
+		$_SESSION["table"] .= "</table>";
 		
 		$stmt -> close();
 		$mysqli -> close(); 
 		return $_SESSION["table"];
 		}
+		
+	
 	
 		
 	/*$x = 4;
